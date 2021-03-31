@@ -76,6 +76,25 @@ router.post("/media", async (req, res, next) => {
     }
 });
 
+router.post("/ranking", async (req, res, next) => {
+    try {
+        let data = JSON.parse(await readFile(global.fileName));    
+        data = data.grades.filter(grade => (grade.subject === req.body.subject) && (grade.type === req.body.type))
+    
+        data.sort((a, b) => {
+            return b.value - a.value;
+        })
+        
+        let ranking = []
+        data.slice(0,3).forEach(item => ranking.push(item.id));
+        console.log(ranking)       
+        res.end();
+        // logger.info() 
+    } catch (err) {
+        next(err);  
+    }
+});
+
 router.get("/", async (req, res, next) => {
     try {
         const data = JSON.parse(await readFile(global.fileName));
